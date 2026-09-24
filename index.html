@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ember & Saffron — Tandoor-fired · Peshawar</title>
+    <!-- Google Fonts: Cormorant Garamond (serif) + Inter (sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ---------- CSS Variables ---------- */
+        :root {
+            --bg-deep: #0b1a0f;
+            --bg-green: #0f2318;
+            --bg-card: #1a2e1f;
+            --gold: #d4af37;
+            --gold-light: #e8c96a;
+            --cream: #f5efe0;
+            --cream-soft: #e8e0ce;
+            --text-primary: #f5efe0;
+            --text-secondary: #c9c0a8;
+            --text-muted: #8f9a8a;
+            --font-serif: 'Cormorant Garamond', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --nav-height: 80px;
+            --transition-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* ---------- Reset & Base ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: var(--nav-height);
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-weight: 300;
+            line-height: 1.7;
+            letter-spacing: 0.01em;
+            overflow-x: hidden;
+        }
+
+        img,
+        svg {
+            display: block;
+            max-width: 100%;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font: inherit;
+            color: inherit;
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        /* ---------- Utility ---------- */
+        .container {
+            width: min(1200px, 90%);
+            margin: 0 auto;
+        }
+
+        .section-pad {
+            padding: 6rem 0;
+        }
+
+        .section-label {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            font-weight: 500;
+            line-height: 1.15;
+            color: var(--cream);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title .accent {
+            color: var(--gold);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        /* ---------- Scroll reveal ---------- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.9s var(--transition-smooth), transform 0.9s var(--transition-smooth);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: 0.2s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: 0.3s;
+        }
+
+        /* ---------- Headings underline ---------- */
+        .heading-underline {
+            position: relative;
+            display: inline-block;
+        }
+
+        .heading-underline::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+            width: 100%;
+            height: 2px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.8s var(--transition-smooth);
+        }
+
+        .heading-underline.visible::after {
+            transform: scaleX(1);
+        }
+
+        /* ---------- Buttons ---------- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 0.9rem 2.2rem;
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border-radius: 0;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.4s var(--transition-smooth), transform 0.3s var(--transition-smooth);
+            will-change: transform;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--bg-deep);
+            border: 1px solid var(--gold);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--cream);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s var(--transition-smooth);
+            z-index: 0;
+        }
+
+        .btn-primary:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .btn-primary:hover {
+            color: var(--bg-deep);
+        }
+
+        .btn-primary span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--cream);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-outline::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gold);
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.5s var(--transition-smooth);
+            z-index: 0;
+        }
+
+        .btn-outline:hover::before {
+            transform: scaleY(1);
+            transform-origin: top;
+        }
+
+        .btn-outline:hover {
+            color: var(--bg-deep);
+            border-color: var(--gold);
+        }
+
+        .btn-outline span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ---------- Navigation ---------- */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            transition: background 0.5s var(--transition-smooth), backdrop-filter 0.5s;
+        }
+
+        .nav.scrolled {
+            background: rgba(11, 26, 15, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .nav-logo {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--cream);
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-logo .amp {
+            color: var(--gold);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            position: relative;
+            padding: 0.3rem 0;
+            transition: color 0.3s;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s var(--transition-smooth);
+        }
+
+        .nav-links a:hover {
+            color: var(--cream);
+        }
+
+        .nav-links a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-cta {
+            margin-left: 1rem;
+            padding: 0.7rem 1.6rem;
+            font-size: 0.7rem;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.4s var(--transition-smooth), color 0.4s var(--transition-smooth);
+        }
+
+        .nav-cta:hover {
+            background: var(--gold);
+            color: var(--bg-deep);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            padding: 8px 0;
+            z-index: 1100;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: var(--cream);
+            transition: transform 0.4s var(--transition-smooth), opacity 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* Mobile menu */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 26, 15, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            z-index: 1050;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s var(--transition-smooth), visibility 0.5s;
+        }
+
+        .mobile-menu.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu a {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            color: var(--cream);
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s var(--transition-smooth), transform 0.5s var(--transition-smooth);
+        }
+
+        .mobile-menu.open a {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu a:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .mobile-menu a:nth-child(2) {
+            transition-delay: 0.15s;
+        }
+
+        .mobile-menu a:nth-child(3) {
+            transition-delay: 0.2s;
+        }
+
+        .mobile-menu a:nth-child(4) {
+            transition-delay: 0.25s;
+        }
+
+        .mobile-menu a:nth-child(5) {
+            transition-delay: 0.3s;
+        }
+
+        .mobile-menu a:nth-child(6) {
+            transition-delay: 0.35s;
+        }
+
+        .mobile-menu a:nth-child(7) {
+            transition-delay: 0.4s;
+        }
+
+        .mobile-menu .btn {
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s var(--transition-smooth) 0.45s, transform 0.5s var(--transition-smooth) 0.45s;
+        }
+
+        .mobile-menu.open .btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: var(--bg-deep);
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(212, 175, 55, 0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 50% at 30% 80%, rgba(15, 50, 25, 0.8) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 20%, rgba(20, 60, 30, 0.5) 0%, transparent 60%);
+            z-index: 1;
+        }
+
+        /* Ember particles */
+        .embers {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .ember {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            filter: blur(1px);
+            opacity: 0;
+            animation: rise 8s infinite var(--transition-smooth);
+        }
+
+        @keyframes rise {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(1);
+            }
+
+            15% {
+                opacity: 0.7;
+            }
+
+            80% {
+                opacity: 0.2;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) scale(0.3);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            padding: 0 1.5rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 0.5rem 1.4rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeUp 1s var(--transition-smooth) 0.3s forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-family: var(--font-serif);
+            font-size: clamp(3.2rem, 10vw, 7rem);
+            font-weight: 500;
+            line-height: 1.05;
+            color: var(--cream);
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeUp 1.1s var(--transition-smooth) 0.6s forwards;
+        }
+
+        .hero-title .amp {
+            color: var(--gold);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .hero-sub {
+            font-family: var(--font-serif);
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            font-style: italic;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeUp 1.1s var(--transition-smooth) 0.9s forwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp 1.1s var(--transition-smooth) 1.2s forwards;
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            animation: fadeUp 1s var(--transition-smooth) 1.8s forwards;
+        }
+
+        .hero-scroll span {
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .hero-scroll .line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            animation: scrollPulse 2s infinite var(--transition-smooth);
+        }
+
+        @keyframes scrollPulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scaleY(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleY(1.2);
+            }
+        }
+
+        /* ---------- Parallax sections ---------- */
+        .parallax-section {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .parallax-bg {
+            position: absolute;
+            inset: -20%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ---------- About / Story ---------- */
+        .story {
+            background: var(--bg-green);
+            position: relative;
+            z-index: 1;
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .story-text p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+            max-width: 520px;
+        }
+
+        .story-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .story-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Tandoor SVG illustration */
+        .tandoor-wrap {
+            width: 100%;
+            max-width: 380px;
+            aspect-ratio: 1;
+            position: relative;
+        }
+
+        .tandoor-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.08));
+        }
+
+        .tandoor-glow {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 20%;
+            background: radial-gradient(ellipse, rgba(212, 175, 55, 0.25) 0%, transparent 70%);
+            filter: blur(15px);
+            animation: glowPulse 3s infinite alternate var(--transition-smooth);
+        }
+
+        @keyframes glowPulse {
+            from {
+                opacity: 0.5;
+                transform: translateX(-50%) scale(1);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) scale(1.15);
+            }
+        }
+
+        /* ---------- Menu ---------- */
+        .menu-section {
+            background: var(--bg-deep);
+        }
+
+        .menu-categories {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem 4rem;
+            margin-top: 3rem;
+        }
+
+        .menu-category {
+            break-inside: avoid;
+        }
+
+        .menu-cat-title {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            position: relative;
+        }
+
+        .menu-cat-title::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.8s var(--transition-smooth) 0.2s;
+        }
+
+        .menu-cat-title.visible::after {
+            transform: scaleX(1);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            padding: 0.4rem 0;
+            transition: transform 0.3s var(--transition-smooth);
+        }
+
+        .menu-item:hover {
+            transform: translateX(6px);
+        }
+
+        .menu-item-name {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: var(--cream);
+            white-space: nowrap;
+            transition: color 0.3s;
+        }
+
+        .menu-item:hover .menu-item-name {
+            color: var(--gold);
+        }
+
+        .menu-item-dots {
+            flex: 1;
+            border-bottom: 1px dotted rgba(212, 175, 55, 0.25);
+            margin: 0 0.3rem;
+            min-width: 20px;
+            transform: translateY(-4px);
+        }
+
+        .menu-item-price {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--gold);
+            white-space: nowrap;
+        }
+
+        .menu-item-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: -0.4rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        /* ---------- Gallery / Flavor cards ---------- */
+        .gallery {
+            background: var(--bg-green);
+            position: relative;
+            z-index: 1;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .flavor-card {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.5s var(--transition-smooth), box-shadow 0.5s var(--transition-smooth);
+            transform-style: preserve-3d;
+            perspective: 800px;
+        }
+
+        .flavor-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .flavor-card-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.8rem;
+            transition: transform 0.5s var(--transition-smooth);
+        }
+
+        .flavor-card:hover .flavor-card-inner {
+            transform: translateY(-4px);
+        }
+
+        .flavor-card-name {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--cream);
+            line-height: 1.2;
+            position: relative;
+            z-index: 2;
+        }
+
+        .flavor-card-tag {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(245, 239, 224, 0.7);
+            margin-top: 0.4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .flavor-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11, 26, 15, 0.85) 0%, transparent 60%);
+            z-index: 1;
+            transition: opacity 0.5s;
+        }
+
+        /* Flavor gradients */
+        .flavor-1 {
+            background: linear-gradient(135deg, #b8860b, #d4af37, #8b6914);
+        }
+
+        .flavor-2 {
+            background: linear-gradient(135deg, #8b1a1a, #c0392b, #6b0f0f);
+        }
+
+        .flavor-3 {
+            background: linear-gradient(135deg, #2d5a27, #4a7c3f, #1a3a15);
+        }
+
+        .flavor-4 {
+            background: linear-gradient(135deg, #f5e6d3, #e8c9a0, #d4a574);
+        }
+
+        .flavor-5 {
+            background: linear-gradient(135deg, #c0392b, #e67e22, #a93226);
+        }
+
+        .flavor-6 {
+            background: linear-gradient(135deg, #4a2c2a, #6b3a2a, #3a1f1a);
+        }
+
+        /* ---------- Chef quote ---------- */
+        .quote-section {
+            background: var(--bg-deep);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quote-section::before {
+            content: '"';
+            position: absolute;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-serif);
+            font-size: 12rem;
+            color: rgba(212, 175, 55, 0.06);
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .quote-text {
+            font-family: var(--font-serif);
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            font-style: italic;
+            font-weight: 400;
+            color: var(--cream);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-author {
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+
+        /* ---------- Reservation ---------- */
+        .reservation {
+            background: var(--bg-green);
+            position: relative;
+            z-index: 1;
+        }
+
+        .reservation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .reservation-info p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .demo-note {
+            display: inline-block;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 0.4rem 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .reservation-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            font-size: 0.9rem;
+            color: var(--cream);
+            transition: border-color 0.4s;
+            background: transparent;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .form-group select {
+            cursor: pointer;
+            color: var(--cream);
+        }
+
+        .form-group select option {
+            background: var(--bg-deep);
+            color: var(--cream);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-bottom-color: var(--gold);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(201, 192, 168, 0.4);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+            font-family: var(--font-sans);
+        }
+
+        .reservation-form .btn {
+            grid-column: 1 / -1;
+            justify-self: start;
+            margin-top: 0.5rem;
+        }
+
+        .form-success {
+            display: none;
+            grid-column: 1 / -1;
+            padding: 1rem 1.5rem;
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 3px solid var(--gold);
+            color: var(--cream);
+            font-size: 0.9rem;
+        }
+
+        .form-success.show {
+            display: block;
+            animation: fadeUp 0.5s var(--transition-smooth);
+        }
+
+        /* ---------- Visit / Location ---------- */
+        .visit {
+            background: var(--bg-deep);
+        }
+
+        .visit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .visit-block {
+            margin-bottom: 2rem;
+        }
+
+        .visit-block h4 {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 0.6rem;
+        }
+
+        .visit-block p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .visit-block a {
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+
+        .visit-block a:hover {
+            color: var(--gold);
+        }
+
+        .hours-list {
+            list-style: none;
+        }
+
+        .hours-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .hours-list li span:first-child {
+            color: var(--cream);
+            font-weight: 400;
+        }
+
+        .hours-list li.closed span:last-child {
+            color: var(--gold);
+        }
+
+        /* ---------- Footer ---------- */
+        .footer {
+            background: var(--bg-green);
+            border-top: 1px solid rgba(212, 175, 55, 0.08);
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand .nav-logo {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            max-width: 300px;
+            line-height: 1.7;
+        }
+
+        .footer-col h5 {
+            font-family: var(--font-sans);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1.2rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.6rem;
+        }
+
+        .footer-col ul a {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: color 0.3s, padding-left 0.3s;
+        }
+
+        .footer-col ul a:hover {
+            color: var(--gold);
+            padding-left: 4px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            transition: background 0.4s, color 0.4s, border-color 0.4s, transform 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: var(--gold);
+            color: var(--bg-deep);
+            border-color: var(--gold);
+            transform: translateY(-3px);
+        }
+
+        .social-icons svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.08);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 968px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .story-grid,
+            .reservation-grid,
+            .visit-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .story-visual {
+                order: -1;
+            }
+
+            .tandoor-wrap {
+                max-width: 260px;
+            }
+
+            .menu-categories {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-brand {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .section-pad {
+                padding: 4rem 0;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reservation-form {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* ---------- Reduced motion ---------- */
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+
+            .heading-underline::after {
+                transform: scaleX(1);
+            }
+
+            .hero-badge,
+            .hero-title,
+            .hero-sub,
+            .hero-buttons,
+            .hero-scroll {
+                opacity: 1;
+                animation: none;
+            }
+
+            .ember {
+                display: none;
+            }
+
+            .tandoor-glow {
+                animation: none;
+                opacity: 0.7;
+            }
+
+            .hero-scroll .line {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== NAVIGATION ========== -->
+    <nav class="nav" id="navbar">
+        <div class="container nav-inner">
+            <a href="#" class="nav-logo">Ember <span class="amp">&</span> Saffron</a>
+
+            <ul class="nav-links">
+                <li><a href="#story">Our Story</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#gallery">Flavors</a></li>
+                <li><a href="#reservation">Reserve</a></li>
+                <li><a href="#visit">Visit</a></li>
+            </ul>
+
+            <button class="nav-cta"
+                onclick="document.getElementById('reservation').scrollIntoView({behavior:'smooth'})">Reserve a
+                Table</button>
+
+            <div class="hamburger" id="hamburger" aria-label="Menu" role="button" tabindex="0">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile menu overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#story" class="mobile-link">Our Story</a>
+        <a href="#menu" class="mobile-link">Menu</a>
+        <a href="#gallery" class="mobile-link">Flavors</a>
+        <a href="#reservation" class="mobile-link">Reserve</a>
+        <a href="#visit" class="mobile-link">Visit</a>
+        <button class="btn btn-primary mobile-link"
+            onclick="document.getElementById('reservation').scrollIntoView({behavior:'smooth'}); document.getElementById('mobileMenu').classList.remove('open'); document.getElementById('hamburger').classList.remove('active');">
+            <span>Reserve a Table</span>
+        </button>
+    </div>
+
+    <main>
+
+        <!-- ========== HERO ========== -->
+        <section class="hero" id="hero">
+            <div class="hero-bg"></div>
+            <div class="embers" id="embers"></div>
+
+            <div class="hero-content">
+                <div class="hero-badge">Peshawar · Since Generations</div>
+                <h1 class="hero-title">Ember <span class="amp">&</span> Saffron</h1>
+                <p class="hero-sub">Tandoor-fired. Slow-cooked. Rooted in tradition.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary"
+                        onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
+                        <span>View the Menu</span>
+                    </button>
+                    <button class="btn btn-outline"
+                        onclick="document.getElementById('reservation').scrollIntoView({behavior:'smooth'})">
+                        <span>Reserve a Table</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="hero-scroll">
+                <span>Scroll</span>
+                <div class="line"></div>
+            </div>
+        </section>
+
+        <!-- ========== OUR STORY ========== -->
+        <section class="story section-pad parallax-section" id="story">
+            <div class="container">
+                <div class="story-grid">
+                    <div class="story-text reveal">
+                        <div class="section-label">Our Story</div>
+                        <h2 class="section-title heading-underline">Where fire meets <span
+                                class="accent">patience</span></h2>
+                        <p>Ember & Saffron was born from a simple belief — that the best food cannot be rushed. Our clay
+                            tandoor, fired with seasoned wood, has been the heart of our kitchen for generations. Every
+                            naan, every kebab, every slow-simmered nihari carries the warmth of that ancient flame.</p>
+                        <p>We source our spices from the bazaars of Peshawar, our meat from trusted local farms, and our
+                            recipes from the hands of grandmothers who never wrote them down. Here, cooking is not a
+                            science — it is a memory, passed down through smoke and saffron.</p>
+                    </div>
+                    <div class="story-visual reveal reveal-delay-2">
+                        <div class="tandoor-wrap">
+                            <svg class="tandoor-svg" viewBox="0 0 300 300" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" aria-label="Illustration of a clay tandoor oven">
+                                <!-- Base / ground -->
+                                <ellipse cx="150" cy="260" rx="110" ry="18" stroke="#d4af37" stroke-width="1"
+                                    opacity="0.2" />
+                                <!-- Tandoor body -->
+                                <path
+                                    d="M90 250 C85 200, 80 150, 95 110 C105 85, 120 70, 150 65 C180 70, 195 85, 205 110 C220 150, 215 200, 210 250 Z"
+                                    stroke="#d4af37" stroke-width="1.5" fill="rgba(212,175,55,0.03)" />
+                                <!-- Inner opening -->
+                                <ellipse cx="150" cy="90" rx="42" ry="14" stroke="#d4af37" stroke-width="1.2"
+                                    fill="rgba(212,175,55,0.04)" />
+                                <!-- Rim highlight -->
+                                <path d="M108 90 C108 78, 128 68, 150 68 C172 68, 192 78, 192 90" stroke="#d4af37"
+                                    stroke-width="1.2" opacity="0.6" />
+                                <!-- Flames / glow inside -->
+                                <path d="M140 88 Q145 75 150 82 Q155 72 160 88" stroke="#e8c96a" stroke-width="1"
+                                    opacity="0.5" fill="none" />
+                                <path d="M135 92 Q142 78 148 88 Q154 76 162 92" stroke="#d4af37" stroke-width="0.8"
+                                    opacity="0.3" fill="none" />
+                                <!-- Side texture lines -->
+                                <path d="M100 200 C110 195, 120 198, 130 195" stroke="#d4af37" stroke-width="0.6"
+                                    opacity="0.2" />
+                                <path d="M170 210 C180 206, 190 209, 200 205" stroke="#d4af37" stroke-width="0.6"
+                                    opacity="0.2" />
+                                <path d="M95 160 C105 156, 115 159, 125 155" stroke="#d4af37" stroke-width="0.6"
+                                    opacity="0.2" />
+                                <!-- Small detail dots -->
+                                <circle cx="120" cy="130" r="1.5" fill="#d4af37" opacity="0.2" />
+                                <circle cx="180" cy="145" r="1.5" fill="#d4af37" opacity="0.2" />
+                                <circle cx="140" cy="180" r="1.5" fill="#d4af37" opacity="0.15" />
+                                <!-- Smoke wisps -->
+                                <path d="M145 60 Q148 40 142 25" stroke="#d4af37" stroke-width="0.8" opacity="0.15"
+                                    fill="none" />
+                                <path d="M155 58 Q160 38 155 20" stroke="#d4af37" stroke-width="0.8" opacity="0.12"
+                                    fill="none" />
+                                <path d="M150 62 Q152 45 150 30" stroke="#d4af37" stroke-width="0.6" opacity="0.1"
+                                    fill="none" />
+                            </svg>
+                            <div class="tandoor-glow"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== MENU ========== -->
+        <section class="menu-section section-pad parallax-section" id="menu">
+            <div class="container">
+                <div class="reveal" style="text-align:center;">
+                    <div class="section-label">The Menu</div>
+                    <h2 class="section-title heading-underline">From our <span class="accent">tandoor</span> to your
+                        table</h2>
+                </div>
+
+                <div class="menu-categories">
+                    <!-- Starters -->
+                    <div class="menu-category reveal">
+                        <h3 class="menu-cat-title">Starters</h3>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Chapli Kebab</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 450</span>
+                        </div>
+                        <p class="menu-item-desc">Peshawari-style minced beef kebab, pomegranate seeds, tomato, green
+                            chilli.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Seekh Kebab</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 420</span>
+                        </div>
+                        <p class="menu-item-desc">Hand-pressed minced lamb, charred on skewers, served with mint
+                            chutney.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Murgh Malai Tikka</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 480</span>
+                        </div>
+                        <p class="menu-item-desc">Creamy chicken morsels, cardamom, white pepper, kissed by the tandoor.
+                        </p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Dahi Baray</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 280</span>
+                        </div>
+                        <p class="menu-item-desc">Lentil fritters, whipped yoghurt, tamarind, roasted cumin.</p>
+                    </div>
+
+                    <!-- From the Tandoor -->
+                    <div class="menu-category reveal reveal-delay-1">
+                        <h3 class="menu-cat-title">From the Tandoor</h3>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Tandoori Lamb Chops</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 1,650</span>
+                        </div>
+                        <p class="menu-item-desc">Overnight-marinated chops, smoked yoghurt, saffron butter.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Tandoori Chicken (Half)</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 890</span>
+                        </div>
+                        <p class="menu-item-desc">Whole chicken marinated in red chilli, yoghurt, and garam masala.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Naan-e-Khameeri</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 120</span>
+                        </div>
+                        <p class="menu-item-desc">Slow-fermented sesame naan, blistered and brushed with ghee.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Garlic & Coriander Naan</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 150</span>
+                        </div>
+                        <p class="menu-item-desc">Fresh garlic, coriander, a whisper of chilli flakes.</p>
+                    </div>
+
+                    <!-- Rice & Curries -->
+                    <div class="menu-category reveal">
+                        <h3 class="menu-cat-title">Rice & Curries</h3>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Peshawari Chicken Biryani</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 620</span>
+                        </div>
+                        <p class="menu-item-desc">Fragrant basmati, caramelised onions, saffron, whole spices.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Beef Nihari</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 780</span>
+                        </div>
+                        <p class="menu-item-desc">Slow-cooked overnight, marrow, ginger, green chilli, lemon.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Daal Tarka</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 350</span>
+                        </div>
+                        <p class="menu-item-desc">Yellow lentils, garlic tempering, cumin, fresh coriander.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Palak Paneer</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 520</span>
+                        </div>
+                        <p class="menu-item-desc">Creamed spinach, house-made paneer, nutmeg, ginger.</p>
+                    </div>
+
+                    <!-- Desserts & Drinks -->
+                    <div class="menu-category reveal reveal-delay-1">
+                        <h3 class="menu-cat-title">Desserts & Drinks</h3>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Kulfi Falooda</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 320</span>
+                        </div>
+                        <p class="menu-item-desc">Hand-churned kulfi, rose syrup, vermicelli, basil seeds.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Gulab Jamun (2 pcs)</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 280</span>
+                        </div>
+                        <p class="menu-item-desc">Warm milk dumplings, cardamom syrup, slivered pistachio.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Masala Chai</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 180</span>
+                        </div>
+                        <p class="menu-item-desc">Assam tea, ginger, green cardamom, fennel, full cream milk.</p>
+
+                        <div class="menu-item">
+                            <span class="menu-item-name">Peshawari Kahwa</span>
+                            <span class="menu-item-dots"></span>
+                            <span class="menu-item-price">Rs. 200</span>
+                        </div>
+                        <p class="menu-item-desc">Green tea, saffron threads, almonds, honey.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== GALLERY / FLAVORS ========== -->
+        <div class="gallery-grid">
+
+            <!-- Card 1 -->
+            <div class="flavor-card reveal">
+                <div
+                    style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&q=80') center/cover no-repeat;">
+                </div>
+                <div class="flavor-card-overlay"></div>
+                <div class="flavor-card-inner">
+                    <div class="flavor-card-name">Murgh Malai Tikka</div>
+                    <div class="flavor-card-tag">Creamy · Smoked · Tender</div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="flavor-card reveal reveal-delay-1">
+                <div
+                    style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80') center/cover no-repeat;">
+                </div>
+                <div class="flavor-card-overlay"></div>
+                <div class="flavor-card-inner">
+                    <div class="flavor-card-name">Tandoori Lamb Chops</div>
+                    <div class="flavor-card-tag">Charred · Saffron · Rich</div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="flavor-card reveal reveal-delay-2">
+                <div
+                    style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&q=80') center/cover no-repeat;">
+                </div>
+                <div class="flavor-card-overlay"></div>
+                <div class="flavor-card-inner">
+                    <div class="flavor-card-name">Mint & Coriander Chutney</div>
+                    <div class="flavor-card-tag">Fresh · Tangy · Vibrant</div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="flavor-card reveal">
+                <div
+                    style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1567206563064-6f60f40a2b57?w=800&q=80') center/cover no-repeat;">
+                </div>
+                <div class="flavor-card-overlay"></div>
+                <div class="flavor-card-inner">
+                    <div class="flavor-card-name">Kulfi Falooda</div>
+                    <div class="flavor-card-tag">Rose · Cardamom · Sweet</div>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="flavor-card reveal reveal-delay-1">
+                <div
+                    style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&q=80') center/cover no-repeat;">
+                </div>
+                <div class="flavor-card-overlay"></div>
+                <div class="flavor-card-inner">
+                    <div class="flavor-card-name">Beef Nihari</div>
+                    <div class="flavor-card-tag">Slow · Spiced · Comforting</div>
+                </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="flavor-card reveal reveal-delay-2">
+                <div
+                    style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=800&q=80') center/cover no-repeat;">
+                </div>
+                <div class="flavor-card-overlay"></div>
+                <div class="flavor-card-inner">
+                    <div class="flavor-card-name">Peshawari Kahwa</div>
+                    <div class="flavor-card-tag">Saffron · Almond · Warm</div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ========== CHEF QUOTE ========== -->
+        <section class="quote-section section-pad">
+            <div class="container reveal">
+                <p class="quote-text">"The tandoor does not hurry. It breathes with the dough, it waits for the meat, it
+                    teaches you that the best things in life are cooked slowly — with fire, with saffron, and with
+                    love."</p>
+                <div class="quote-author">— Chef Imran Khan, Head Chef</div>
+            </div>
+        </section>
+
+        <!-- ========== RESERVATION ========== -->
+        <section class="reservation section-pad parallax-section" id="reservation">
+            <div class="container">
+                <div class="reservation-grid">
+                    <div class="reservation-info reveal">
+                        <div class="section-label">Reservations</div>
+                        <h2 class="section-title heading-underline">Join us at the <span class="accent">table</span>
+                        </h2>
+                        <p>Whether it's an intimate dinner or a family gathering, we'd be honoured to host you. Reserve
+                            your table and let the fire do the rest.</p>
+                        <p>For parties larger than 8, please call us directly.</p>
+                        <div class="demo-note">Demo form — no data is sent or stored</div>
+                    </div>
+
+                    <form class="reservation-form reveal reveal-delay-2" id="reservationForm">
+                        <div class="form-group">
+                            <label for="resName">Full Name</label>
+                            <input type="text" id="resName" placeholder="Your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="resPhone">Phone</label>
+                            <input type="tel" id="resPhone" placeholder="+92 300 0000000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="resDate">Date</label>
+                            <input type="date" id="resDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="resTime">Time</label>
+                            <input type="time" id="resTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="resGuests">Guests</label>
+                            <select id="resGuests" required>
+                                <option value="">Select</option>
+                                <option value="1">1 guest</option>
+                                <option value="2">2 guests</option>
+                                <option value="3">3 guests</option>
+                                <option value="4">4 guests</option>
+                                <option value="5">5 guests</option>
+                                <option value="6">6 guests</option>
+                                <option value="7">7 guests</option>
+                                <option value="8">8 guests</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="resRequests">Special Requests (optional)</label>
+                            <input type="text" id="resRequests" placeholder="Allergies, occasions...">
+                        </div>
+                        <button type="submit" class="btn btn-primary"><span>Confirm Reservation</span></button>
+                        <div class="form-success" id="formSuccess">
+                            Thank you! This is a demo — your reservation would be confirmed here. We'll be in touch
+                            soon.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== VISIT / LOCATION ========== -->
+        <section class="visit section-pad" id="visit">
+            <div class="container">
+                <div class="reveal" style="text-align:center; margin-bottom: 3rem;">
+                    <div class="section-label">Visit Us</div>
+                    <h2 class="section-title heading-underline">Find your way to <span class="accent">Ember &
+                            Saffron</span></h2>
+                </div>
+
+                <div class="visit-grid">
+                    <div class="reveal">
+                        <div class="visit-block">
+                            <h4>Address</h4>
+                            <p>12-B, University Road,<br>Peshawar Cantt,<br>Peshawar, Khyber Pakhtunkhwa 25000, Pakistan
+                            </p>
+                        </div>
+                        <div class="visit-block">
+                            <h4>Contact</h4>
+                            <p>
+                                <a href="tel:+92911234567">+92 91 123 4567</a><br>
+                                <a href="mailto:hello@emberandsaffron.pk">hello@emberandsaffron.pk</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-2">
+                        <div class="visit-block">
+                            <h4>Opening Hours</h4>
+                            <ul class="hours-list">
+                                <li><span>Monday</span><span>5:00 PM – 11:30 PM</span></li>
+                                <li><span>Tuesday</span><span>5:00 PM – 11:30 PM</span></li>
+                                <li><span>Wednesday</span><span>5:00 PM – 11:30 PM</span></li>
+                                <li><span>Thursday</span><span>5:00 PM – 11:30 PM</span></li>
+                                <li><span>Friday</span><span>2:00 PM – 12:00 AM</span></li>
+                                <li><span>Saturday</span><span>2:00 PM – 12:00 AM</span></li>
+                                <li class="closed"><span>Sunday</span><span>1:00 PM – 10:30 PM</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="nav-logo">Ember <span class="amp">&</span> Saffron</div>
+                    <p>Tandoor-fired. Slow-cooked. Rooted in the traditions of Peshawar.</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h5>Explore</h5>
+                    <ul>
+                        <li><a href="#story">Our Story</a></li>
+                        <li><a href="#menu">Menu</a></li>
+                        <li><a href="#gallery">Flavors</a></li>
+                        <li><a href="#reservation">Reservations</a></li>
+                        <li><a href="#visit">Visit Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h5>Contact</h5>
+                    <ul>
+                        <li><a href="tel:+92911234567">+92 91 123 4567</a></li>
+                        <li><a href="mailto:hello@emberandsaffron.pk">hello@emberandsaffron.pk</a></li>
+                        <li><a href="#visit">12-B, University Road, Peshawar</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>&copy; <span id="year"></span> Ember & Saffron. All rights reserved.</span>
+                <span>Demo project — not a real business.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            'use strict';
+
+            // ---------- Current year ----------
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // ---------- Prefers reduced motion ----------
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            // ---------- Navbar scroll state ----------
+            const navbar = document.getElementById('navbar');
+            let lastScroll = 0;
+
+            window.addEventListener('scroll', function () {
+                const currentScroll = window.pageYOffset;
+                if (currentScroll > 60) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                lastScroll = currentScroll;
+            }, { passive: true });
+
+            // ---------- Hamburger menu ----------
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            hamburger.addEventListener('click', function () {
+                this.classList.toggle('active');
+                mobileMenu.classList.toggle('open');
+                document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+            });
+
+            hamburger.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+
+            // Close mobile menu on link click
+            document.querySelectorAll('.mobile-link').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    hamburger.classList.remove('active');
+                    mobileMenu.classList.remove('open');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            // ---------- Ember particles (hero) ----------
+            if (!prefersReducedMotion) {
+                const embersContainer = document.getElementById('embers');
+                const emberCount = 18;
+
+                for (let i = 0; i < emberCount; i++) {
+                    const ember = document.createElement('div');
+                    ember.className = 'ember';
+                    ember.style.left = Math.random() * 100 + '%';
+                    ember.style.bottom = Math.random() * 30 + '%';
+                    ember.style.animationDelay = Math.random() * 8 + 's';
+                    ember.style.animationDuration = (6 + Math.random() * 6) + 's';
+                    ember.style.width = (2 + Math.random() * 4) + 'px';
+                    ember.style.height = ember.style.width;
+                    ember.style.opacity = 0.3 + Math.random() * 0.5;
+                    embersContainer.appendChild(ember);
+                }
+            }
+
+            // ---------- Scroll reveal (Intersection Observer) ----------
+            const revealElements = document.querySelectorAll('.reveal, .heading-underline, .menu-cat-title');
+
+            if ('IntersectionObserver' in window) {
+                const revealObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.15,
+                    rootMargin: '0px 0px -40px 0px'
+                });
+
+                revealElements.forEach(function (el) {
+                    revealObserver.observe(el);
+                });
+            } else {
+                // Fallback: show everything
+                revealElements.forEach(function (el) {
+                    el.classList.add('visible');
+                });
+            }
+
+            // ---------- Parallax on scroll ----------
+            if (!prefersReducedMotion) {
+                const parallaxSections = document.querySelectorAll('.parallax-section');
+
+                window.addEventListener('scroll', function () {
+                    const scrollY = window.pageYOffset;
+
+                    parallaxSections.forEach(function (section) {
+                        const rect = section.getBoundingClientRect();
+                        const speed = 0.08;
+                        const offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * speed;
+
+                        // Apply subtle transform to decorative bg elements if they exist
+                        const bg = section.querySelector('.parallax-bg');
+                        if (bg) {
+                            bg.style.transform = 'translateY(' + offset + 'px)';
+                        }
+                    });
+                }, { passive: true });
+            }
+
+            // ---------- Reservation form (demo) ----------
+            const reservationForm = document.getElementById('reservationForm');
+            const formSuccess = document.getElementById('formSuccess');
+
+            reservationForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Simple validation
+                const name = document.getElementById('resName').value.trim();
+                const phone = document.getElementById('resPhone').value.trim();
+                const date = document.getElementById('resDate').value;
+                const time = document.getElementById('resTime').value;
+                const guests = document.getElementById('resGuests').value;
+
+                if (!name || !phone || !date || !time || !guests) {
+                    alert('Please fill in all required fields.');
+                    return;
+                }
+
+                // Show success message (demo only — no actual submission)
+                formSuccess.classList.add('show');
+
+                // Reset form after a delay
+                setTimeout(function () {
+                    reservationForm.reset();
+                    formSuccess.classList.remove('show');
+                }, 5000);
+
+                // Scroll to success message
+                formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+
+            // ---------- Smooth scroll for all internal links ----------
+            document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // ---------- Magnetic button effect (subtle) ----------
+            if (!prefersReducedMotion) {
+                const magneticBtns = document.querySelectorAll('.btn-primary, .btn-outline, .nav-cta');
+
+                magneticBtns.forEach(function (btn) {
+                    btn.addEventListener('mousemove', function (e) {
+                        const rect = this.getBoundingClientRect();
+                        const x = e.clientX - rect.left - rect.width / 2;
+                        const y = e.clientY - rect.top - rect.height / 2;
+                        const moveX = x * 0.15;
+                        const moveY = y * 0.15;
+                        this.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px)';
+                    });
+
+                    btn.addEventListener('mouseleave', function () {
+                        this.style.transform = 'translate(0, 0)';
+                    });
+                });
+            }
+
+        })();
+    </script>
+</body>
+
+</html>
